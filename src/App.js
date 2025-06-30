@@ -98,7 +98,7 @@ useEffect(() => {
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
           <div style={styles.logo}>
-            <span style={styles.logoText}> Tickup</span>
+            <span style={styles.logoText}> Tickuppppppppppp</span>
           </div>
 
         </div>
