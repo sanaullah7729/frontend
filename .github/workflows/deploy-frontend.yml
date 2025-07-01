@@ -22,11 +22,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: GitGuardian Secrets Scan
-        uses: gitguardian/action-secrets-scan@v2  # Use the correct GitGuardian action version
-        with:
-          gitguardian_api_key: ${{ secrets.GITGUARDIAN_API_KEY }}
-
   deploy:
     name: Deploy Frontend to S3
     runs-on: ubuntu-latest
@@ -43,6 +38,11 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: GitGuardian Secrets Scan
+        uses: gitguardian/action-secrets-scan@v2  # Use the correct GitGuardian action version
+        with:
+          gitguardian_api_key: ${{ secrets.GITGUARDIAN_API_KEY }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
