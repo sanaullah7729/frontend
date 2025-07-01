@@ -27,6 +27,13 @@ jobs:
 
       - name: List output folder
         run: ls -R build/
+        
+      # Security Scanning - Snyk - Scans your dependencies for known vulnerabilities.
+      - name: Install Snyk
+        run: npm install -g snyk
+
+      - name: Snyk Test for vulnerabilities
+        run: snyk test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
