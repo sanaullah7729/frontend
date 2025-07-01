@@ -24,7 +24,7 @@ jobs:
 
       # Secrets Scanning - GitGuardian
       - name: GitGuardian Secrets Scan
-        uses: gitguardian/action-secrets-scan@v1
+        uses: gitguardian/action-secrets-scan@v2
 
 
   deploy:
