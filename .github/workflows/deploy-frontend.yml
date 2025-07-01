@@ -61,4 +61,4 @@ jobs:
         run: npm run build
 
       - name: Deploy to S3
-        run: aws s3 sync build/ s3://prod-tickup --delete
+        run: aws s3 sync build/ s3://react-frontend-code-test --delete
