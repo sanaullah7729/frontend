@@ -22,10 +22,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      # Secrets Scanning - GitGuardian
       - name: GitGuardian Secrets Scan
-        uses: gitguardian/action-secrets-scan@v2
-
+        uses: gitguardian/action-secrets-scan@v2  # Use the correct GitGuardian action version
+        with:
+          gitguardian_api_key: ${{ secrets.GITGUARDIAN_API_KEY }}
 
   deploy:
     name: Deploy Frontend to S3
