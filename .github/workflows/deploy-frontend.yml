@@ -1,13 +1,12 @@
-name: Deploy Frontend to S3
+name: Deploy Frontend
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  deploy:
+  frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,12 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build frontend
-        run: npm run build
-
-      - name: List output folder
-        run: ls -R build/
-        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -35,5 +28,37 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload to S3
-        run: aws s3 sync build/ s3://react-frontend-code-test --delete
+      - name: Fetch full API Gateway URL for /receive
+        id: fetch-api-url
+        run: |
+          set -e
+
+          # Get the API ID by name
+          API_ID=$(aws apigateway get-rest-apis \
+            --query "items[?name=='prod-tickup'].id" \
+            --output text)
+
+          echo "API ID: $API_ID"
+
+          # Define stage and path
+          STAGE="prod"
+          PATH="/receive"
+          REGION="${{ secrets.AWS_REGION }}"
+
+          # Construct full URL
+          FULL_URL="https://${API_ID}.execute-api.${REGION}.amazonaws.com/${STAGE}${PATH}"
+          echo "Resolved API URL: $FULL_URL"
+
+          # Set it as environment variable
+          echo "API_ENDPOINT=$FULL_URL" >> $GITHUB_ENV
+
+      - name: Update App.js with the new POST endpoint
+        run: |
+          echo "Updating App.js with the new POST endpoint..."
+          sed -i "s|https://uti1ng6zpl.execute-api.eu-north-1.amazonaws.com/dev/receive|${{ env.API_ENDPOINT }}|g" src/App.js
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Deploy to S3
+        run: aws s3 sync build/ s3://prod-tickup --delete
