@@ -34,7 +34,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Set the token here
         with:
-          projectBaseDir: ./frontend
+          projectBaseDir: .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
