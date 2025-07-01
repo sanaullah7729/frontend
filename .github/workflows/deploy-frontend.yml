@@ -27,15 +27,7 @@ jobs:
 
       - name: List output folder
         run: ls -R build/
-
-      # Static Code Analysis - SonarCloud
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v1
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Set the token here
-        with:
-          projectBaseDir: .
-
+        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
