@@ -30,7 +30,7 @@ jobs:
 
       # Static Code Analysis - SonarCloud
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-action@v1
+        uses: sonarsource/sonarcloud-action@v2
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
