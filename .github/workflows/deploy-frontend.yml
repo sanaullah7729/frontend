@@ -22,18 +22,20 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   zap:
+    name: owasp zap scan
     runs-on: ubuntu-latest
+    needs: sonarqube
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Run OWASP ZAP scan
         uses: zaproxy/action-full-scan@v0.0.8
         with:
-          target: 'http://your-app-url'
+          target: 'http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/'
   snyk:
     name: Snyk Test
     runs-on: ubuntu-latest
-    needs: sonarqube
+    needs: zap
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
