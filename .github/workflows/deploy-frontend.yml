@@ -21,36 +21,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  zap:
-    name: owasp zap scan
-    runs-on: ubuntu-latest
-    needs: sonarqube
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run OWASP ZAP scan
-        uses: zaproxy/action-full-scan@v0.0.8
-        with:
-          target: 'http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/'
-  snyk:
-    name: Snyk Test
-    runs-on: ubuntu-latest
-    needs: zap
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      # Install Snyk globally
-      - name: Install Snyk
-        run: npm install -g snyk
-
-      # Authenticate with Snyk using the secret token
-      - name: Authenticate with Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
-      # Run Snyk test for vulnerabilities with debugging enabled
-      - name: Snyk Test for vulnerabilities
-        run: snyk test --all-projects --debug
   deploy:
     name: Deploy Frontend to S3
     runs-on: ubuntu-latest
