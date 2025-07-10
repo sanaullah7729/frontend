@@ -46,7 +46,6 @@ jobs:
     if: github.ref == 'refs/heads/main'  # Only run this job on main branch
     environment:
       name: staging  # Reference the environment name here
-      deployment_status: approval_required  # This line ensures approval is required
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
