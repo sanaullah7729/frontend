@@ -92,6 +92,19 @@ jobs:
         run: |
           aws s3 sync build/ s3://react-frontend-code-test --delete
 
+      - name: Configure S3 Static Website Hosting
+        run: |
+          S3_BUCKET="react-frontend-code-test"  # Replace with your S3 bucket name
+          # Ensure Static Website Hosting is enabled and Index Document is provided
+          aws s3api put-bucket-website \
+            --bucket $S3_BUCKET \
+            --website-configuration '{
+              "IndexDocument": {
+                "Suffix": "index.html"
+              }
+            }'
+          echo "S3 static website hosting is configured for $S3_BUCKET"
+
       - name: Get Static Website URL from S3
         id: s3_url
         run: |
