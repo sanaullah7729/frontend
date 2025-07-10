@@ -78,10 +78,10 @@ jobs:
           echo "Resolved API URL: $FULL_URL"
           echo "API_ENDPOINT=$FULL_URL" >> $GITHUB_ENV
 
-      - name: Update App.js with the new POST endpoint
+      - name: Update App.jsx with the new POST endpoint
         run: |
-          echo "Updating App.js with the new POST endpoint..."
-          sed -i "s|https://uti1ng6zpl.execute-api.eu-north-1.amazonaws.com/dev/receive|${{ env.API_ENDPOINT }}|g" src/App.js
+          echo "Updating App.jsx with the new POST endpoint..."
+          sed -i "s|https://uti1ng6zpl.execute-api.eu-north-1.amazonaws.com/dev/receive|${{ env.API_ENDPOINT }}|g" src/App.jsx
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
