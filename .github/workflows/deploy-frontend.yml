@@ -1,5 +1,4 @@
 name: Deploy and Scan Frontend
-
 on:
   push:
     branches:
