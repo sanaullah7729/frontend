@@ -45,7 +45,7 @@ jobs:
     if: github.ref == 'refs/heads/main'  # Only run this job on main branch
     environment:
       name: staging
-      url: https://your-s3-website-url.com  # Add your actual S3 site URL
+      url: http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/  # Add your actual S3 site URL
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
