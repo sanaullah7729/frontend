@@ -1,5 +1,4 @@
 name: Deploy and Scan Frontend
-
 on:
   push:
     branches:
@@ -45,7 +44,8 @@ jobs:
     needs: sonarqube_and_build
     if: github.ref == 'refs/heads/main'  # Only run this job on main branch
     environment:
-      name: staging  # Reference the environment name here
+      name: staging
+      url: http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/  # Add your actual S3 site URL
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -89,12 +89,4 @@ jobs:
           path: build/
 
       - name: Deploy to S3
-        run: |
-          aws s3 sync build/ s3://react-frontend-code-test --delete
-
-      # Here, you can directly output your static website URL
-      - name: Output S3 Website URL
-        run: |
-          S3_WEBSITE_URL="http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/"
-          echo "The deployed static website is available at $S3_WEBSITE_URL"
-          echo "S3_WEBSITE_URL=$S3_WEBSITE_URL" >> $GITHUB_ENV
+        run: aws s3 sync build/ s3://react-frontend-code-test --delete
