@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: build/
+          path: dist/
 
   wait_for_approval_and_deploy:
     name: Wait for Approval & Deploy
