@@ -92,27 +92,9 @@ jobs:
         run: |
           aws s3 sync build/ s3://react-frontend-code-test --delete
 
-      - name: Configure S3 Static Website Hosting
+      # Here, you can directly output your static website URL
+      - name: Output S3 Website URL
         run: |
-          S3_BUCKET="react-frontend-code-test"  # Replace with your S3 bucket name
-          # Ensure Static Website Hosting is enabled and Index Document is provided
-          aws s3api put-bucket-website \
-            --bucket $S3_BUCKET \
-            --website-configuration '{
-              "IndexDocument": {
-                "Suffix": "index.html"
-              }
-            }'
-          echo "S3 static website hosting is configured for $S3_BUCKET"
-
-      - name: Get Static Website URL from S3
-        id: s3_url
-        run: |
-          # Fetch the static website URL from S3 bucket
-          S3_BUCKET="react-frontend-code-test"  # Replace with your S3 bucket name
-          WEBSITE_URL=$(aws s3 website s3://${S3_BUCKET}/ --query 'WebsiteURL' --output text)
-          echo "S3 Website URL: $WEBSITE_URL"
-          echo "S3_WEBSITE_URL=$WEBSITE_URL" >> $GITHUB_ENV
-
-      - name: Output the S3 URL
-        run: echo "The deployed static website is available at ${{ env.S3_WEBSITE_URL }}"
+          S3_WEBSITE_URL="http://react-frontend-code-test.s3-website-us-east-1.amazonaws.com/"
+          echo "The deployed static website is available at $S3_WEBSITE_URL"
+          echo "S3_WEBSITE_URL=$S3_WEBSITE_URL" >> $GITHUB_ENV
