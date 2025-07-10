@@ -20,7 +20,7 @@ const PottdFeedbackApp = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(false);
 
-  // API endpointss
+  // API endpoints
   const API_BASE_URL = 'https://hufacc6k9c.execute-api.eu-west-2.amazonaws.com/prod';
   const API_KEY = 'td0BO9QQMf8IJcP4dAp6T7bidSY3TI8MTXOjkYne';
   const endpoints = {
