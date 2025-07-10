@@ -1,0 +1,93 @@
+name: Deploy and Scan Frontend
+
+on:
+  push:
+    branches:
+      - main   # Trigger pipeline only on main branch
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarqube_and_build:
+    name: SonarQube + Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Upload build folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: build/
+
+  wait_for_approval_and_deploy:
+    name: Wait for Approval & Deploy
+    runs-on: ubuntu-latest
+    needs: sonarqube_and_build
+    if: github.ref == 'refs/heads/main'  # Only run this job on main branch
+    environment:
+      name: staging
+      url: https://your-s3-website-url.com  # Add your actual S3 site URL
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Fetch full API Gateway URL for /receive
+        id: fetch-api-url
+        run: |
+          set -e
+          API_ID=$(aws apigateway get-rest-apis --query "items[?name=='prod-tickup'].id" --output text)
+          STAGE="prod"
+          PATH="/receive"
+          REGION="${{ secrets.AWS_REGION }}"
+          FULL_URL="https://${API_ID}.execute-api.${REGION}.amazonaws.com/${STAGE}${PATH}"
+          echo "Resolved API URL: $FULL_URL"
+          echo "API_ENDPOINT=$FULL_URL" >> $GITHUB_ENV
+
+      - name: Update App.js with the new POST endpoint
+        run: |
+          echo "Updating App.js with the new POST endpoint..."
+          sed -i "s|https://uti1ng6zpl.execute-api.eu-north-1.amazonaws.com/dev/receive|${{ env.API_ENDPOINT }}|g" src/App.js
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: build/
+
+      - name: Deploy to S3
+        run: aws s3 sync build/ s3://react-frontend-code-test --delete
