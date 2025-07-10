@@ -363,7 +363,7 @@ const deleteFeedback = async (userId, createdAt) => {
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  {editingId ? 'Edit Feedback' : 'Share Your Experiences'}
+                  {editingId ? 'Edit Feedback' : 'Share Your Experience about Ali and Maha'}
                 </h2>
                 <p className="text-gray-600">
                   Help us improve by sharing your thoughts and suggestions
